@@ -5,6 +5,7 @@ package no.hvl.dat110.middleware;
 
 import java.math.BigInteger;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,14 +68,25 @@ public class ChordLookup {
 	private NodeInterface findHighestPredecessor(BigInteger key) throws RemoteException {
 		
 		// collect the entries in the finger table for this node
+		List<NodeInterface> table = node.getFingerTable();
 		
 		// starting from the last entry, iterate over the finger table
-		
-		// for each finger, obtain a stub from the registry
-		
-		// check that finger is a member of the set {nodeID+1,...,ID-1} i.e. (nodeID+1 <= finger <= key-1) using the ComputeLogic
-		
-		// if logic returns true, then return the finger (means finger is the closest to key)
+		for(int i = table.size()-1; i < 0; i--) {
+			
+			NodeInterface finger = table.get(i);
+			
+			// for each finger, obtain a stub from the registry
+			NodeInterface stub = Util.getProcessStub(finger.getNodeName(), finger.getPort());
+			
+			
+			// check that finger is a member of the set {nodeID+1,...,ID-1} i.e. (nodeID+1 <= finger <= key-1) using the ComputeLogic
+			if(Util.computeLogic(finger.getNodeID(), node.getNodeID().add(new BigInteger("1")), key.subtract(new BigInteger("1")))) {
+				
+				// if logic returns true, then return the finger (means finger is the closest to key)
+				return stub;
+			}
+			
+		}
 		
 		return (NodeInterface) this;			
 	}
