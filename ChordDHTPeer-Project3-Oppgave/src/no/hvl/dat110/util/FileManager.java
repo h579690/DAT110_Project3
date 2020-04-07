@@ -85,7 +85,7 @@ public class FileManager {
     	// Task2: assign a replica as the primary for this file. Hint, see the slide (project 3) on Canvas
     	
     	// create replicas of the filename
-    	createReplicaFiles();
+    	createReplicaFiles(); //måtte få den til å bli forandra *3
     	
 		// iterate over the replicas
     	
@@ -121,15 +121,22 @@ public class FileManager {
 		// Task: Given a filename, find all the peers that hold a copy of this file
 		
 		// generate the N replicas from the filename by calling createReplicaFiles()
+		createReplicaFiles();
 		
 		// it means, iterate over the replicas of the file
+		for(int i = 0; i < replicafiles.length; i++) {
+			BigInteger replica = replicafiles[i];
 		
 		// for each replica, do findSuccessor(replica) that returns successor s.
-		
+			NodeInterface successor = chordnode.findSuccessor(replica);
 		// get the metadata (Message) of the replica from the successor, s (i.e. active peer) of the file
-		
+			Message mess = successor.getFilesMetadata(replica);
+			
 		// save the metadata in the set succinfo.
+			succinfo.add(mess);
 		
+		}	
+			
 		this.activeNodesforFile = succinfo;
 		
 		return succinfo;
@@ -142,8 +149,14 @@ public class FileManager {
 	public NodeInterface findPrimaryOfItem() {
 
 		// Task: Given all the active peers of a file (activeNodesforFile()), find which is holding the primary copy
+		//activeNodesforFile;
 		
 		// iterate over the activeNodesforFile
+		for(Message melding : activeNodesforFile) {
+			if(melding.isPrimaryServer()) {
+				return Util.getProcessStub(melding.getNodeIP(), melding.getPort());
+			}
+		}
 		
 		// for each active peer (saved as Message)
 		
@@ -280,4 +293,5 @@ public class FileManager {
 	public void setFilepath(String filepath) {
 		this.filepath = filepath;
 	}
+
 }
