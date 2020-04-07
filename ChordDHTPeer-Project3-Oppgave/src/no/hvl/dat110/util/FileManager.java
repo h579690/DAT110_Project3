@@ -97,7 +97,7 @@ public class FileManager {
     		successor.addKey(replica);
     		
     		// call the saveFileContent() on the successor
-    		successor.saveFileContent(filename, fileID, bytesOfFile, primary);
+    		successor.saveFileContent(filename, replica, bytesOfFile, false);
         	
     		
         	// increment counter

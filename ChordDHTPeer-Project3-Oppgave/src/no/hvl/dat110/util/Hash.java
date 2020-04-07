@@ -9,7 +9,6 @@ package no.hvl.dat110.util;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -57,8 +56,9 @@ public class Hash {
 		BigInteger size = BigDecimal.valueOf(Math.pow(2, numOfBits)).toBigInteger();
 
 		// return the address size
-
 		return size;
+		
+		
 	}
 
 	public static int bitSize() {

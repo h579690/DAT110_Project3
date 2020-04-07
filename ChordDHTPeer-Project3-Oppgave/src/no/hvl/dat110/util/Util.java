@@ -43,20 +43,34 @@ public class Util {
 		
 		// implement: read the descriptions above
 		
+//		boolean cond = false;
+//		
+//		if(lower.compareTo(upper) > 0) {
+//			upper = upper.add(Hash.addressSize());
+//			
+//			if(lower.compareTo(id) > 0) {
+//				id = id.add(Hash.addressSize());
+//				
+//			}
+//		}
+//		
+//		cond = ((lower.compareTo(id) <= 0) && (id.compareTo(upper) <= 0));
+//		
+//		return cond;
+		
 		boolean cond = false;
 		BigInteger duplicate = upper;
-
-		if(lower.compareTo(upper) > 0) {
-			duplicate = upper.add(Hash.addressSize());
+		BigInteger addresssize = Hash.addressSize();
+		if (lower.compareTo(upper) > 0) {
+			duplicate = upper.add(addresssize);
 			
-			if(id.compareTo(lower) <= 0) {
-				id = id.add(Hash.addressSize());
-				
+			if(id.compareTo(upper)<=0) {
+				id = id.add(addresssize);
 			}
 		}
-		upper = duplicate;
 		
-		cond = ((lower.compareTo(id) < 0) && (id.compareTo(upper) <= 0));
+		upper = duplicate;
+		cond = (id.compareTo(lower) >= 0) && (id.compareTo(upper)<=0);
 		
 		return cond;
 		
