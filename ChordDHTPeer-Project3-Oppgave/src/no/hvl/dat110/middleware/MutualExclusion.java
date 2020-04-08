@@ -50,25 +50,40 @@ public class MutualExclusion {
 		System.out.println(node.nodename + " wants to access CS");
 		
 		// clear the queueack before requesting for votes
+		queueack.clear();
 		
 		// clear the mutexqueue
+		mutexqueue.clear();
 		
 		// increment clock
+		clock.increment();
 		
 		// adjust the clock on the message, by calling the setClock on the message
+		message.setClock(clock.getClock());
 				
 		// wants to access resource - set the appropriate lock variable
-	
+		WANTS_TO_ENTER_CS = true;
 		
 		// start MutualExclusion algorithm
 		
+		
 		// first, removeDuplicatePeersBeforeVoting. A peer can contain 2 replicas of a file. This peer will appear twice
-
+		List<Message> liste = removeDuplicatePeersBeforeVoting();
+		
 		// multicast the message to activenodes (hint: use multicastMessage)
+		multicastMessage(message, liste);
 		
 		// check that all replicas have replied (permission)
+		boolean permission = areAllMessagesReturned(liste.size());
 		
 		// if yes, acquireLock
+		if(permission) {
+			acquireLock();
+			
+			node.broadcastUpdatetoPeers(updates);
+			
+			mutexqueue.clear();
+		}
 		
 		// node.broadcastUpdatetoPeers
 		
@@ -77,13 +92,18 @@ public class MutualExclusion {
 		// return permission
 		
 		
-		return false;
+		return permission;
 	}
 	
 	// multicast message to other processes including self
 	private void multicastMessage(Message message, List<Message> activenodes) throws RemoteException {
 		
 		// iterate over the activenodes
+		for(Message meld : activenodes) {
+			
+			NodeInterface stub = Util.getProcessStub(meld.getNodeIP(), meld.getPort());
+			stub.onMutexRequestReceived(meld);
+		}
 		
 		// obtain a stub for each node from the registry
 		
