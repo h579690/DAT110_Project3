@@ -152,18 +152,17 @@ public class FileManager {
 		//activeNodesforFile;
 		
 		// iterate over the activeNodesforFile
+		// for each active peer (saved as Message)
 		for(Message melding : activeNodesforFile) {
+			
+			// use the primaryServer boolean variable contained in the Message class to check if it is the primary or not
 			if(melding.isPrimaryServer()) {
+				
+				// return the primary
 				return Util.getProcessStub(melding.getNodeIP(), melding.getPort());
 			}
 		}
-		
-		// for each active peer (saved as Message)
-		
-		// use the primaryServer boolean variable contained in the Message class to check if it is the primary or not
-		
-		// return the primary
-		
+	
 		return null; 
 	}
 	
