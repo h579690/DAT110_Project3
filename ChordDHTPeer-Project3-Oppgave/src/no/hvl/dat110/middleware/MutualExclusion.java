@@ -183,6 +183,7 @@ public class MutualExclusion {
 		
 		// iterate over the activenodes
 		for(Message mld : activenodes) {
+			
 			NodeInterface stub = Util.getProcessStub(mld.getNodeIP(), mld.getPort());
 			try {
 				stub.releaseLocks();
