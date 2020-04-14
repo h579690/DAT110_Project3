@@ -189,7 +189,7 @@ public class MutualExclusion {
 				stub.releaseLocks();
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace(); //
+				e.printStackTrace();
 			}
 		}
 		
