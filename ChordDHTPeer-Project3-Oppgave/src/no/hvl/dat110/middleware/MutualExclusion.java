@@ -90,8 +90,6 @@ public class MutualExclusion {
 		// clear the mutexqueue
 		
 		// return permission
-		
-		
 		return permission;
 	}
 	
@@ -176,6 +174,7 @@ public class MutualExclusion {
 	public void onMutexAcknowledgementReceived(Message message) throws RemoteException {
 		
 		// add message to queueack
+		queueack.add(message);
 		
 	}
 	
@@ -183,6 +182,15 @@ public class MutualExclusion {
 	public void multicastReleaseLocks(Set<Message> activenodes) {
 		
 		// iterate over the activenodes
+		for(Message mld : activenodes) {
+			NodeInterface stub = Util.getProcessStub(mld.getNodeIP(), mld.getPort());
+			try {
+				stub.releaseLocks();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		// obtain a stub for each node from the registry
 		
@@ -192,6 +200,10 @@ public class MutualExclusion {
 	
 	private boolean areAllMessagesReturned(int numvoters) throws RemoteException {
 		// check if the size of the queueack is same as the numvoters
+		if(queueack.size() == numvoters) {
+			queueack.clear();
+			return true;
+		}
 		
 		// clear the queueack
 		
