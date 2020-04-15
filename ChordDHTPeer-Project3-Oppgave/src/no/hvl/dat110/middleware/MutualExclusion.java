@@ -170,7 +170,7 @@ public class MutualExclusion {
 			case 1: {
 				
 				// queue this message
-				queue.add(message); //committ 
+				queue.add(message);
 				break;
 			}
 			
@@ -180,10 +180,23 @@ public class MutualExclusion {
 			 */
 			case 2: {
 				// check the clock of the sending process
+				int lclock = clock.getClock();
 				// own clock for the multicast message
+				int mclock = message.getClock();
 				// compare clocks, the lowest wins
+				
 				// if clocks are the same, compare nodeIDs, the lowest wins
-				// if sender wins, acknowledge the message, obtain a stub and call onMutexAcknowledgementReceived()
+				if(lclock == mclock) {
+					if(message.getNodeID().compareTo(node.getNodeID()) < 0) {
+						// if sender wins, acknowledge the message, obtain a stub and call onMutexAcknowledgementReceived()
+						message.setAcknowledged(true);
+						
+						NodeInterface stub = Util.getProcessStub(procName, port);
+						stub.onMutexAcknowledgementReceived(message);
+					}
+				} else {
+					queue.add(message);
+				}
 				// if sender looses, queue it
 				
 				
