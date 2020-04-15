@@ -170,7 +170,7 @@ public class MutualExclusion {
 			case 1: {
 				
 				// queue this message
-				queue.add(message);
+				queue.add(message); //committ 
 				break;
 			}
 			
