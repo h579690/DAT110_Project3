@@ -112,31 +112,40 @@ public class MutualExclusion {
 		clock.increment();
 		
 		// if message is from self, acknowledge, and call onMutexAcknowledgementReceived()
+		if(message.getNodeID().equals(node.getNodeID())) {
+			message.setAcknowledged(true);
+			onMutexAcknowledgementReceived(message);
+		}
 		
 		
-		onMutexAcknowledgementReceived(message);
-		
-			
 		int caseid = -1;
 		
 		// write if statement to transition to the correct caseid
 		
-		
-		if (caseid == 0) {
+		if (!CS_BUSY && !WANTS_TO_ENTER_CS) {
 			// caseid=0: Receiver is not accessing shared resource and does not want to (send OK to sender)
-			
+			caseid = 0;
+			message.setAcknowledged(true);
 			
 		}
 		
-		if(caseid == 1) {
+		if(CS_BUSY) {
 			// caseid=1: Receiver already has access to the resource (dont reply but queue the request)
-			
+			caseid = 1;
+			mutexqueue.add(message);
 			
 		}
 		
-		if(caseid == 2) {
+		if(WANTS_TO_ENTER_CS) {
 			// caseid=2: Receiver wants to access resource but is yet to - compare own message clock to received message's clock
-			
+			caseid = 2;
+			if(message.getClock() < clock.getClock()) {
+				message.setAcknowledged(true);
+				
+				
+			} else {
+				message.setAcknowledged(false);
+			}
 			
 		}
 		
